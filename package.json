@@ -4,17 +4,19 @@
   "description": "A web project with parcel bundler",
   "source": "index.html",
   "scripts": {
-    "start": "parcel",
-    "build": "parcel build --dist-dir docs"
+    "start": "parcel -p 8000 ",
+    "build": "parcel build --dist-dir docs --public-url ./"
   },
   "author": "Murat Y.",
   "license": "MIT",
   "devDependencies": {
+    "@parcel/transformer-sass": "^2.0.1",
     "parcel": "^2.0.1"
   },
   "dependencies": {
     "jquery": "^3.6.0",
     "jquery-backstretch": "^2.1.18",
-    "magnific-popup": "^1.1.0"
+    "magnific-popup": "^1.1.0",
+    "slick-carousel": "^1.8.1"
   }
 }

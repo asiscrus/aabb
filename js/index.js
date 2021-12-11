@@ -1,3 +1,11 @@
+import '../css/fontawesome-all.min.css';
+import '../css/bootstrap.min.css';
+import '../css/magnific-popup.css';
+import '../slick/slick.css';
+import '../slick/slick-theme.css';
+import '../slick/slick.min.js';
+import '../css/tooplate-style.css';
+
 //first, we load jQuery and define at as a global
 import './jqueryImport'
 // the $ symbol should be also loaded in our current scope
@@ -6,7 +14,6 @@ import $ from "jquery"
 import 'magnific-popup'
 import 'jquery-backstretch'
 import 'slick-carousel'
-
 
 
 document.addEventListener('DOMContentLoaded', setup())

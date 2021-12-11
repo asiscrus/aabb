@@ -13,6 +13,8 @@ import $ from "jquery"
 //finally, we load all plugins for jQuery
 import 'magnific-popup'
 import 'jquery-backstretch'
+import 'slick-carousel'
+
 
 document.addEventListener('DOMContentLoaded', setup())
 function setup(){
@@ -182,6 +184,3 @@ function setup(){
     });
 
 }
-
-
-

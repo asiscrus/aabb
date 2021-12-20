@@ -17,6 +17,7 @@
     "jquery": "^3.6.0",
     "jquery-backstretch": "^2.1.18",
     "magnific-popup": "^1.1.0",
+    "myfxbook-api-client": "^1.0.4",
     "slick-carousel": "^1.8.1"
   }
 }

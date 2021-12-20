@@ -14,6 +14,7 @@
     "parcel": "^2.0.1"
   },
   "dependencies": {
+    "chart.js": "^3.6.2",
     "jquery": "^3.6.0",
     "jquery-backstretch": "^2.1.18",
     "magnific-popup": "^1.1.0",

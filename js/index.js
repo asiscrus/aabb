@@ -5,6 +5,7 @@ import '../slick/slick.css';
 import '../slick/slick-theme.css';
 import '../slick/slick.min.js';
 import '../css/tooplate-style.css';
+import Chart from 'chart.js/auto';
 
 //first, we load jQuery and define at as a global
 import './jqueryImport'
@@ -15,6 +16,38 @@ import 'magnific-popup'
 import 'jquery-backstretch'
 import 'slick-carousel'
 
+
+
+const { MyfxbookApi } = require('myfxbook-api-client');
+const client = new MyfxbookApi({ email: 'asiscrus.muratyazici@gmail.com', password: '53575357My' });
+
+client
+    .getDailyGain(9315996, '2021-11-10', '2021-12-02')
+    .then(data => {
+        console.log(data.dailyGain);
+    })
+    .catch(error => {
+        console.log('error', error);
+    });
+
+var data1 = [];
+var data2 = [];
+var n = console.log(data.dailyGain.length);
+
+for (let x = 0; x < n; x++){
+    data1.push([
+        {
+            date:data.dailyGain[x][0], //x-axis
+            grow_rate:data.dailyGain[x][1] //y-axis
+        }
+    ]);
+    data2.push([
+        {
+            date:data.dailyGain[x][0], //x-axis
+            grow_rate:data.dailyGain[x][2] //y-axis
+        }
+    ])
+}
 
 document.addEventListener('DOMContentLoaded', setup())
 function setup(){
@@ -183,4 +216,42 @@ function setup(){
 
     });
 
+}
+
+document.getElementById("bar-chart", loadBarChart(data))
+function loadBarChart(data2) {
+    var barChart = new Chart(barChart, {
+        type: "bar",
+        data: {
+            labels: data.map((d) => d.level), //x-axis data
+            datasets: [
+                {
+                    label: "Daily Growth USD",
+                    data: data.map((d) => d.experience), //y-axis data
+                    backgroundColor: "rgba(255, 159, 64, 0.5)", //yellow
+                    borderColor: "rgba(255, 159, 64, 1)",
+                    borderWidth: 1,
+                }
+            ],
+        }
+    });
+}
+
+document.getElementById("growth-chart", loadLineChart(data))
+function loadLineChart(data1) {
+    var growthChart = new Chart(growthChart, {
+        type: "line",
+        data: {
+            labels: data.map((d) => d.level), //x-axis data
+            datasets: [
+                {
+                    label: "Growth Rate",
+                    data: data.map((d) => d.experience), //y-axis data
+                    backgroundColor: "rgba(153, 102, 255, 0.5)",
+                    borderColor: "rgba(153, 102, 255, 1)",
+                    borderWidth: 1,
+                }
+            ],
+        }
+    });
 }

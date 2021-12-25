@@ -15,39 +15,12 @@ import $ from "jquery"
 import 'magnific-popup'
 import 'jquery-backstretch'
 import 'slick-carousel'
+import FxBookClient from "./fxbook_client";
+
+//todo make sure that you understand that this code will be visible to website user
+const client = new FxBookClient('', '');
 
 
-
-const { MyfxbookApi } = require('myfxbook-api-client');
-const client = new MyfxbookApi({ email: 'asiscrus.muratyazici@gmail.com', password: '53575357My' });
-
-client
-    .getDailyGain(9315996, '2021-11-10', '2021-12-02')
-    .then(data => {
-        console.log(data.dailyGain);
-    })
-    .catch(error => {
-        console.log('error', error);
-    });
-
-var data1 = [];
-var data2 = [];
-var n = console.log(data.dailyGain.length);
-
-for (let x = 0; x < n; x++){
-    data1.push([
-        {
-            date:data.dailyGain[x][0], //x-axis
-            grow_rate:data.dailyGain[x][1] //y-axis
-        }
-    ]);
-    data2.push([
-        {
-            date:data.dailyGain[x][0], //x-axis
-            grow_rate:data.dailyGain[x][2] //y-axis
-        }
-    ])
-}
 
 document.addEventListener('DOMContentLoaded', setup())
 function setup(){
@@ -215,12 +188,52 @@ function setup(){
         });
 
     });
+    ShowGains();
+}
+function LoadGains(){
+    let result = null;
+    const gainsData = client.getGains(9315996, '2021-11-10', '2021-12-02');
+
+    console.log(gainsData.dailyGain);
+    const data1 = [];
+    const data2 = [];
+    console.log(gainsData.dailyGain.length);
+    const n = gainsData.dailyGain.length;
+
+    for (let x = 0; x < n; x++) {
+        data1.push([
+            {
+                date: gainsData.dailyGain[x][0], //x-axis
+                grow_rate: gainsData.dailyGain[x][1] //y-axis
+            }
+        ]);
+        data2.push([
+            {
+                date: gainsData.dailyGain[x][0], //x-axis
+                grow_rate: gainsData.dailyGain[x][2] //y-axis
+            }
+        ])
+    }
+    result = [data1, data2]
+    return result;
 
 }
+function ShowGains(){
+    let gains = LoadGains();
+    if (gains === null)
+    {
+        alert("Can't access API")
+        return;
+    }
 
-document.getElementById("bar-chart", loadBarChart(data))
-function loadBarChart(data2) {
-    var barChart = new Chart(barChart, {
+    const lineChart =  document.getElementById("growth-chart");
+    loadLineChart(gains[0], lineChart)
+    const barChart = document.getElementById("bar-chart")
+    loadBarChart(gains[1], barChart)
+}
+
+function loadBarChart(data2, element) {
+    const barChart = new Chart(element, {
         type: "bar",
         data: {
             labels: data.map((d) => d.level), //x-axis data
@@ -236,10 +249,8 @@ function loadBarChart(data2) {
         }
     });
 }
-
-document.getElementById("growth-chart", loadLineChart(data))
-function loadLineChart(data1) {
-    var growthChart = new Chart(growthChart, {
+function loadLineChart(data1, element) {
+    const growthChart = new Chart(element, {
         type: "line",
         data: {
             labels: data.map((d) => d.level), //x-axis data
@@ -255,3 +266,5 @@ function loadLineChart(data1) {
         }
     });
 }
+
+

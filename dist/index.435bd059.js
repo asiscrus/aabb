@@ -478,33 +478,10 @@ var _jqueryDefault = parcelHelpers.interopDefault(_jquery);
 var _magnificPopup = require("magnific-popup");
 var _jqueryBackstretch = require("jquery-backstretch");
 var _slickCarousel = require("slick-carousel");
-const { MyfxbookApi  } = require('myfxbook-api-client');
-const client = new MyfxbookApi({
-    email: 'asiscrus.muratyazici@gmail.com',
-    password: '53575357My'
-});
-client.getDailyGain(9315996, '2021-11-10', '2021-12-02').then((data)=>{
-    console.log(data.dailyGain);
-}).catch((error)=>{
-    console.log('error', error);
-});
-var data1 = [];
-var data2 = [];
-var n = console.log(data.dailyGain.length);
-for(let x = 0; x < n; x++){
-    data1.push([
-        {
-            date: data.dailyGain[x][0],
-            grow_rate: data.dailyGain[x][1] //y-axis
-        }
-    ]);
-    data2.push([
-        {
-            date: data.dailyGain[x][0],
-            grow_rate: data.dailyGain[x][2] //y-axis
-        }
-    ]);
-}
+var _fxbookClient = require("./fxbook_client");
+var _fxbookClientDefault = parcelHelpers.interopDefault(_fxbookClient);
+//todo make sure that you understand that this code will be visible to website user
+const client = new _fxbookClientDefault.default('', '');
 document.addEventListener('DOMContentLoaded', setup());
 function setup() {
     var sidebarVisible = false;
@@ -629,10 +606,49 @@ function setup() {
             setupFooter();
         });
     });
+    ShowGains();
 }
-document.getElementById("bar-chart", loadBarChart(data));
-function loadBarChart(data2) {
-    var barChart = new _autoDefault.default(barChart, {
+function LoadGains() {
+    let result = null;
+    const gainsData = client.getGains(9315996, '2021-11-10', '2021-12-02');
+    console.log(gainsData.dailyGain);
+    const data1 = [];
+    const data2 = [];
+    console.log(gainsData.dailyGain.length);
+    const n = gainsData.dailyGain.length;
+    for(let x = 0; x < n; x++){
+        data1.push([
+            {
+                date: gainsData.dailyGain[x][0],
+                grow_rate: gainsData.dailyGain[x][1] //y-axis
+            }
+        ]);
+        data2.push([
+            {
+                date: gainsData.dailyGain[x][0],
+                grow_rate: gainsData.dailyGain[x][2] //y-axis
+            }
+        ]);
+    }
+    result = [
+        data1,
+        data2
+    ];
+    return result;
+}
+function ShowGains() {
+    let gains = LoadGains();
+    if (gains === null) {
+        alert("Can't access API");
+        return;
+    }
+    const lineChart = document.getElementById("growth-chart");
+    loadLineChart(gains[0], lineChart);
+    const barChart = document.getElementById("bar-chart");
+    loadBarChart(gains[1], barChart);
+}
+function loadBarChart(data2, element) {
+    const barChart = new _autoDefault.default(element, {
         type: "bar",
         data: {
             labels: data.map((d)=>d.level
@@ -650,9 +666,8 @@ function loadBarChart(data2) {
         }
     });
 }
-document.getElementById("growth-chart", loadLineChart(data));
-function loadLineChart(data1) {
-    var growthChart = new _autoDefault.default(growthChart, {
+function loadLineChart(data1, element) {
+    const growthChart = new _autoDefault.default(element, {
         type: "line",
         data: {
             labels: data.map((d)=>d.level
@@ -671,7 +686,7 @@ function loadLineChart(data1) {
     });
 }
 
-},{"../css/fontawesome-all.min.css":"bkZnW","../css/bootstrap.min.css":"7bZDF","../css/magnific-popup.css":"lCkmv","../slick/slick.css":"enVJQ","../slick/slick-theme.css":"j8Wbk","../slick/slick.min.js":"JI3x6","../css/tooplate-style.css":"9bUUF","chart.js/auto":"j1lNe","./jqueryImport":"eU2go","jquery":"bE6My","magnific-popup":"lDiv8","jquery-backstretch":"5cthG","slick-carousel":"80bkK","myfxbook-api-client":"coK58","@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV"}],"bkZnW":[function() {},{}],"7bZDF":[function() {},{}],"lCkmv":[function() {},{}],"enVJQ":[function() {},{}],"j8Wbk":[function() {},{}],"JI3x6":[function(require,module,exports) {
+},{"../css/fontawesome-all.min.css":"bkZnW","../css/bootstrap.min.css":"7bZDF","../css/magnific-popup.css":"lCkmv","../slick/slick.css":"enVJQ","../slick/slick-theme.css":"j8Wbk","../slick/slick.min.js":"JI3x6","../css/tooplate-style.css":"9bUUF","chart.js/auto":"j1lNe","./jqueryImport":"eU2go","jquery":"bE6My","magnific-popup":"lDiv8","jquery-backstretch":"5cthG","slick-carousel":"80bkK","./fxbook_client":"dLjjf","@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV"}],"bkZnW":[function() {},{}],"7bZDF":[function() {},{}],"lCkmv":[function() {},{}],"enVJQ":[function() {},{}],"j8Wbk":[function() {},{}],"JI3x6":[function(require,module,exports) {
 !function(i) {
     "function" == typeof define && define.amd ? define([
         "jquery"
@@ -24965,386 +24980,37 @@ globalThis.jQuery = _jqueryDefault.default;
     };
 });
 
-},{"jquery":"bE6My"}],"coK58":[function(require,module,exports) {
-"use strict";
-var __importDefault = this && this.__importDefault || function(mod) {
-    return mod && mod.__esModule ? mod : {
-        "default": mod
-    };
-};
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-const myfxbook_api_1 = __importDefault(require("./myfxbook-api"));
-exports.MyfxbookApi = myfxbook_api_1.default;
-
-},{"./myfxbook-api":"4xuFE"}],"4xuFE":[function(require,module,exports) {
-"use strict";
-var __awaiter = this && this.__awaiter || function(thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function(resolve1, reject) {
-        function fulfilled(value) {
-            try {
-                step(generator.next(value));
-            } catch (e) {
-                reject(e);
-            }
-        }
-        function rejected(value) {
-            try {
-                step(generator["throw"](value));
-            } catch (e) {
-                reject(e);
-            }
-        }
-        function step(result) {
-            result.done ? resolve1(result.value) : new P(function(resolve) {
-                resolve(result.value);
-            }).then(fulfilled, rejected);
-        }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __importDefault = this && this.__importDefault || function(mod) {
-    return mod && mod.__esModule ? mod : {
-        "default": mod
-    };
-};
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-const node_fetch_1 = __importDefault(require("node-fetch"));
-const querystring_1 = __importDefault(require("querystring"));
-const API_ROOT_URL = 'https://www.myfxbook.com/api';
-class MyfxbookApi {
-    constructor({ email , password  }){
-        this.email = email;
+},{"jquery":"bE6My"}],"dLjjf":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+class FxBookClient {
+    constructor(login, password){
+        this.login = login;
         this.password = password;
-    }
-    /** Get session id (cached value is returned upon subsequent or parallel requests)*/ getSessionId() {
-        return __awaiter(this, void 0, void 0, function*() {
-            if (!this.session) {
-                this.getLoginDataPromise = this.getLoginDataPromise || this.login();
-                const loginData = yield this.getLoginDataPromise;
-                this.session = this.session || loginData.session;
-            }
-            return this.session;
+        this.prefix = 'https://www.myfxbook.com/api/';
+        let session;
+        const response1 = fetch(`${this.prefix}login.json?email=${this.login}&password=${this.password}`, {
+            mode: 'cors'
+        }).then((response)=>{
+            return response.json();
+        }).then((data)=>{
+            session = data.session;
         });
+        this.session = session;
     }
-    makeApiCall(endpoint, params) {
-        return __awaiter(this, void 0, void 0, function*() {
-            const url = `${API_ROOT_URL}/${endpoint}.json?${querystring_1.default.stringify(params)}`;
-            const rawResponse = yield node_fetch_1.default(url, {
-                method: 'post'
-            });
-            const textResponse = yield rawResponse.text();
-            let isError = false;
-            let errorMessage = '';
-            let parsedData;
-            try {
-                parsedData = JSON.parse(textResponse);
-                if (parsedData.error) {
-                    isError = true;
-                    errorMessage = parsedData.message;
-                }
-            } catch (error) {
-                const errText = `${endpoint} error: ${JSON.stringify(error)}`;
-                const originalResponse = `Original response: ${JSON.stringify(textResponse)}`;
-                isError = true;
-                errorMessage = `${errText}. ${originalResponse}`;
-            }
-            if (isError) throw new Error(errorMessage);
-            return parsedData;
+    getGains(id, startDate, endDate) {
+        let dailyGains;
+        fetch(`${this.prefix}get-daily-gain.json?session=${this.session}&id=${id}&start=${startDate}}&end=${endDate}}`, {
+            mode: 'cors'
+        }).then((response)=>response.json()
+        ).then((json)=>{
+            dailyGains = json;
         });
-    }
-    /**
-     * Fetches login data object
-     */ login() {
-        return __awaiter(this, void 0, void 0, function*() {
-            return this.makeApiCall('login', {
-                email: this.email,
-                password: this.password
-            });
-        });
-    }
-    /**
-     * Logs out from current session
-     */ logout() {
-        return __awaiter(this, void 0, void 0, function*() {
-            return this.makeApiCall('logout', {
-                session: yield this.getSessionId()
-            });
-        });
-    }
-    /**
-     * Get list of all trading accounts
-     */ getMyAccounts() {
-        return __awaiter(this, void 0, void 0, function*() {
-            return this.makeApiCall('get-my-accounts', {
-                session: yield this.getSessionId()
-            });
-        });
-    }
-    /**
-     * Get list of all watched accounts
-     */ getWatchedAccounts() {
-        return __awaiter(this, void 0, void 0, function*() {
-            return this.makeApiCall('get-watched-accounts', {
-                session: yield this.getSessionId()
-            });
-        });
-    }
-    /**
-     * Get all open orders for a given account
-     * @param id id of a trading account
-     */ getOpenOrders(id) {
-        return __awaiter(this, void 0, void 0, function*() {
-            return this.makeApiCall('get-open-orders', {
-                session: yield this.getSessionId(),
-                id: String(id)
-            });
-        });
-    }
-    /**
-     * Get all open trades for a given account
-     * @param id id of a trading account
-     */ getOpenTrades(id1) {
-        return __awaiter(this, void 0, void 0, function*() {
-            return this.makeApiCall('get-open-trades', {
-                session: yield this.getSessionId(),
-                id: String(id1)
-            });
-        });
-    }
-    /**
-     * Get history of all trades for a given account
-     * @param id id of a trading account
-     */ getHistory(id2) {
-        return __awaiter(this, void 0, void 0, function*() {
-            return this.makeApiCall('get-history', {
-                session: yield this.getSessionId(),
-                id: String(id2)
-            });
-        });
-    }
-    /**
-     * Get daily breakdown of all gains for a given account within time range
-     * @param id id of a trading account
-     * @param start start date, format : yyyy-MM-dd
-     * @param end end date, format : yyyy-MM-dd
-     */ getDailyGain(id3, start, end) {
-        return __awaiter(this, void 0, void 0, function*() {
-            return this.makeApiCall('get-daily-gain', {
-                session: yield this.getSessionId(),
-                id: String(id3),
-                start,
-                end
-            });
-        });
-    }
-    /**
-     * Get total gain for a given account within time range
-     * @param id id of a trading account
-     * @param start start date, format : yyyy-MM-dd
-     * @param end end date, format : yyyy-MM-dd
-     */ getGain(id4, start1, end1) {
-        return __awaiter(this, void 0, void 0, function*() {
-            return this.makeApiCall('get-gain', {
-                session: yield this.getSessionId(),
-                id: String(id4),
-                start: start1,
-                end: end1
-            });
-        });
-    }
-    /** Get Myfxbook Community Outlook data (https://www.myfxbook.com/community/outlook) */ getCommunityOutlook() {
-        return __awaiter(this, void 0, void 0, function*() {
-            return this.makeApiCall('get-community-outlook', {
-                session: yield this.getSessionId()
-            });
-        });
-    }
-    /**
-     * Get community outlook data broken down by a country for provided symbol
-     * @param symbol a trading instrument (currency pair)
-     */ getCommunityOutlookByCountry(symbol) {
-        return __awaiter(this, void 0, void 0, function*() {
-            return this.makeApiCall('get-community-outlook-by-country', {
-                session: yield this.getSessionId(),
-                symbol
-            });
-        });
-    }
-    /**
-     * Get daily breakdown of all account data within time range
-     * @param id id of a trading account
-     * @param start start date, format : yyyy-MM-dd
-     * @param end end date, format : yyyy-MM-dd
-     */ getDailyData(id5, start2, end2) {
-        return __awaiter(this, void 0, void 0, function*() {
-            return this.makeApiCall('get-data-daily', {
-                session: yield this.getSessionId(),
-                id: String(id5),
-                start: start2,
-                end: end2
-            });
-        });
+        return dailyGains;
     }
 }
-exports.default = MyfxbookApi;
+exports.default = FxBookClient;
 
-},{"node-fetch":"kuLgB","querystring":"46waF"}],"kuLgB":[function(require,module,exports) {
-"use strict";
-// ref: https://github.com/tc39/proposal-global
-var getGlobal = function() {
-    // the only reliable means to get the global object is
-    // `Function('return this')()`
-    // However, this causes CSP violations in Chrome apps.
-    if (typeof self !== 'undefined') return self;
-    if (typeof window !== 'undefined') return window;
-    if (typeof global !== 'undefined') return global;
-    throw new Error('unable to locate global object');
-};
-var global = getGlobal();
-module.exports = exports = global.fetch;
-// Needed for TypeScript and Webpack.
-if (global.fetch) exports.default = global.fetch.bind(global);
-exports.Headers = global.Headers;
-exports.Request = global.Request;
-exports.Response = global.Response;
-
-},{}],"46waF":[function(require,module,exports) {
-'use strict';
-exports.decode = exports.parse = require('./decode');
-exports.encode = exports.stringify = require('./encode');
-
-},{"./decode":"aDCW3","./encode":"6dFZR"}],"aDCW3":[function(require,module,exports) {
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-'use strict';
-// If obj.hasOwnProperty has been overridden, then calling
-// obj.hasOwnProperty(prop) will break.
-// See: https://github.com/joyent/node/issues/1707
-function hasOwnProperty(obj, prop) {
-    return Object.prototype.hasOwnProperty.call(obj, prop);
-}
-module.exports = function(qs, sep, eq, options) {
-    sep = sep || '&';
-    eq = eq || '=';
-    var obj = {
-    };
-    if (typeof qs !== 'string' || qs.length === 0) return obj;
-    var regexp = /\+/g;
-    qs = qs.split(sep);
-    var maxKeys = 1000;
-    if (options && typeof options.maxKeys === 'number') maxKeys = options.maxKeys;
-    var len = qs.length;
-    // maxKeys <= 0 means that we should not limit keys count
-    if (maxKeys > 0 && len > maxKeys) len = maxKeys;
-    for(var i = 0; i < len; ++i){
-        var x = qs[i].replace(regexp, '%20'), idx = x.indexOf(eq), kstr, vstr, k, v;
-        if (idx >= 0) {
-            kstr = x.substr(0, idx);
-            vstr = x.substr(idx + 1);
-        } else {
-            kstr = x;
-            vstr = '';
-        }
-        k = decodeURIComponent(kstr);
-        v = decodeURIComponent(vstr);
-        if (!hasOwnProperty(obj, k)) obj[k] = v;
-        else if (isArray(obj[k])) obj[k].push(v);
-        else obj[k] = [
-            obj[k],
-            v
-        ];
-    }
-    return obj;
-};
-var isArray = Array.isArray || function(xs) {
-    return Object.prototype.toString.call(xs) === '[object Array]';
-};
-
-},{}],"6dFZR":[function(require,module,exports) {
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-'use strict';
-var stringifyPrimitive = function(v) {
-    switch(typeof v){
-        case 'string':
-            return v;
-        case 'boolean':
-            return v ? 'true' : 'false';
-        case 'number':
-            return isFinite(v) ? v : '';
-        default:
-            return '';
-    }
-};
-module.exports = function(obj, sep, eq, name) {
-    sep = sep || '&';
-    eq = eq || '=';
-    if (obj === null) obj = undefined;
-    if (typeof obj === 'object') return map(objectKeys(obj), function(k) {
-        var ks = encodeURIComponent(stringifyPrimitive(k)) + eq;
-        if (isArray(obj[k])) return map(obj[k], function(v) {
-            return ks + encodeURIComponent(stringifyPrimitive(v));
-        }).join(sep);
-        else return ks + encodeURIComponent(stringifyPrimitive(obj[k]));
-    }).join(sep);
-    if (!name) return '';
-    return encodeURIComponent(stringifyPrimitive(name)) + eq + encodeURIComponent(stringifyPrimitive(obj));
-};
-var isArray = Array.isArray || function(xs) {
-    return Object.prototype.toString.call(xs) === '[object Array]';
-};
-function map(xs, f) {
-    if (xs.map) return xs.map(f);
-    var res = [];
-    for(var i = 0; i < xs.length; i++)res.push(f(xs[i], i));
-    return res;
-}
-var objectKeys = Object.keys || function(obj) {
-    var res = [];
-    for(var key in obj)if (Object.prototype.hasOwnProperty.call(obj, key)) res.push(key);
-    return res;
-};
-
-},{}]},["hVNDP","dxxdW"], "dxxdW", "parcelRequire97db")
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV"}]},["hVNDP","dxxdW"], "dxxdW", "parcelRequire97db")
 
 //# sourceMappingURL=index.435bd059.js.map
